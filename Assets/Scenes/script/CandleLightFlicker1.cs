@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class CandleLightFlicker : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class CandleLightFlicker : MonoBehaviour
     public float minIntensity = 1.5f;
     public float maxIntensity = 3.0f;
     public float duration = 30f;  // Max time before the candle goes out
+    
+    public Light sceneLight;  // Reference to the light
+    public Slider timerBar;   // UI Slider reference     
 
     private float startIntensity;
     private float timer;
@@ -23,6 +27,22 @@ public class CandleLightFlicker : MonoBehaviour
         timer = duration;
         StartCoroutine(FlickerEffect());
         StartCoroutine(ReduceLightOverTime());
+
+        timerBar.maxValue = 100f;
+        timerBar.value = duration;
+    }
+
+    void Update()
+    {
+        if (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            timerBar.value = timer; // Update UI
+        }
+        else
+        {
+            sceneLight.enabled = false; // Turn off light
+        }
     }
 
     IEnumerator FlickerEffect()
